@@ -11,6 +11,9 @@ namespace Context
         private GameObject player;
         private GameObject uiCanvas;
 
+        [SerializeField]
+        private Transform playerSpawnOrigin;
+
         private void Start()
         {
             UIEventDispatcher uiEventDispatcher = new UIEventDispatcher();
@@ -19,6 +22,7 @@ namespace Context
             uiCanvas.GetComponent<UIController>().InitDependencies(uiEventDispatcher);
             
             player = (GameObject) PrefabUtility.InstantiatePrefab(Resources.Load("Player"));
+            player.transform.position = playerSpawnOrigin.position;
             player.GetComponent<PlayerController>().InitDependencies(uiEventDispatcher);
             
             gameManager = new GameObject("GameManager").AddComponent<GameManager>();
