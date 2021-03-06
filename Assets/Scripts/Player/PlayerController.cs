@@ -18,7 +18,16 @@ namespace Controllers
 		private CharacterController characterController;
 
 		[SerializeField]
+		private Transform groundValidator;
+
+		[SerializeField]
 		private float health;
+
+		[SerializeField]
+		private float groundValidatorRadius;
+
+		[SerializeField]
+		private LayerMask groundLayer;
 
 		private int layerMask;
 
@@ -43,7 +52,7 @@ namespace Controllers
 		{
 			if (health > 0)
 			{
-				movementController.Update();
+				movementController.Update(groundValidator.position, groundValidatorRadius, groundLayer);
 			}
 			else
 			{
@@ -51,6 +60,15 @@ namespace Controllers
 			}
 		}
 
+		private void OnDrawGizmosSelected()
+		{
+			// Draw a yellow sphere at the transform's position
+			Gizmos.color = Color.yellow;
+			Gizmos.DrawSphere(groundValidator.position, groundValidatorRadius);
+
+		}
+
+		// Triggered from InputSystem
 		public void OnFire(InputAction.CallbackContext ctx)
 		{
 			if (!ctx.performed) return;
@@ -63,11 +81,13 @@ namespace Controllers
 			}
 		}
 
+		// Triggered from InputSystem
 		public void OnMove(InputAction.CallbackContext ctx)
 		{
 			movementController.SetMoveDirectionFromInput(ctx.ReadValue<Vector2>());
 		}
 
+		// Triggered from InputSystem
 		public void OnLook(InputAction.CallbackContext ctx)
 		{
 			movementController.SetRotationXYFromInput(ctx.ReadValue<Vector2>());
