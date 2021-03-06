@@ -9,10 +9,10 @@ namespace Controllers
 
         [SerializeField] private TextMeshProUGUI scoreReadout;
 
-        public void InitDependencies(UIEventDispatcher uiEventDispatcher)
+        public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher)
         {
-            uiEventDispatcher.onEnemyKilled += IncreaseScore;
-            uiEventDispatcher.onPlayerKilled += GameOver;
+            gameplayEventDispatcher.onEnemyKilled += IncreaseScore;
+            gameplayEventDispatcher.onPlayerKilled += GameOver;
         }
 
         private void GameOver()

@@ -1,4 +1,5 @@
 ﻿using System;
+using Player;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,64 +20,35 @@ namespace Controllers
 		[SerializeField]
 		private float health;
 
-		[SerializeField]
-		private Vector2 sensitivity;
-
-		[SerializeField]
-		private float playerSpeed = 1;
-
-		private Vector2 moveDirection;
-
-		private float lookX;
-
-		private float lookY;
-
-		private float minY = -60f;
-
-		private float maxY = 60f;
-
 		private int layerMask;
 
-		private UIEventDispatcher uiEventDispatcher;
+		private GameplayEventDispatcher gameplayEventDispatcher;
+
+		private MovementController movementController;
 
 		public float Health => health;
 
-		public void InitDependencies(UIEventDispatcher uiEventDispatcher)
+		public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher)
 		{
-			this.uiEventDispatcher = uiEventDispatcher;
+			this.gameplayEventDispatcher = gameplayEventDispatcher;
 		}
 
 		private void Start()
 		{
 			this.layerMask = 1 << 8;
+			movementController = new MovementController(transform, characterController);
 		}
 
 		private void Update()
 		{
 			if (health > 0)
 			{
-				Move();
-				Rotate();
+				movementController.Update();
 			}
 			else
 			{
-				uiEventDispatcher.PlayerKilled();
+				gameplayEventDispatcher.PlayerKilled();
 			}
-		}
-
-		private void Rotate()
-		{
-			lookY = Mathf.Clamp(lookY, minY, maxY);
-			transform.localEulerAngles = new Vector3(lookY, lookX, 0);
-		}
-
-		private void Move()
-		{
-			Vector3 movement =
-				(transform.forward * this.moveDirection.y + transform.right * this.moveDirection.x)
-				* playerSpeed;
-
-			characterController.Move(movement);
 		}
 
 		public void OnFire(InputAction.CallbackContext ctx)
@@ -93,13 +65,12 @@ namespace Controllers
 
 		public void OnMove(InputAction.CallbackContext ctx)
 		{
-			this.moveDirection = ctx.ReadValue<Vector2>();
+			movementController.SetMoveDirectionFromInput(ctx.ReadValue<Vector2>());
 		}
 
 		public void OnLook(InputAction.CallbackContext ctx)
 		{
-			this.lookX += ctx.ReadValue<Vector2>().x * sensitivity.x;
-			this.lookY -= ctx.ReadValue<Vector2>().y * sensitivity.y;
+			movementController.SetRotationXYFromInput(ctx.ReadValue<Vector2>());
 		}
 
 		private void OnCollisionEnter(Collision other)

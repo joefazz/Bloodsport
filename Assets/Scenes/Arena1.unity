@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 68369101}
   - component: {fileID: 68369100}
   - component: {fileID: 68369099}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 12Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 2
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -1631,7 +1631,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-27302
+  m_Name: pb_Mesh20434
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1818,7 +1818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 500f4f7bb85544e2bf4012d87366f781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpawnOrigin: {fileID: 0}
+  playerSpawnOrigin: {fileID: 1189188301}
 --- !u!4 &802023524
 Transform:
   m_ObjectHideFlags: 0
@@ -1839,7 +1839,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-27874
+  m_Name: pb_Mesh20468
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2010,7 +2010,7 @@ GameObject:
   - component: {fileID: 1035616745}
   - component: {fileID: 1035616744}
   - component: {fileID: 1035616743}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 1stFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2563,7 +2563,7 @@ GameObject:
   - component: {fileID: 1058110715}
   - component: {fileID: 1058110714}
   - component: {fileID: 1058110713}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 2ndFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3859,7 +3859,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-20982
+  m_Name: pb_Mesh20456
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

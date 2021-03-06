@@ -14,18 +14,18 @@ public class EnemyAI : MonoBehaviour
 
     private float health = 10;
 
-    private UIEventDispatcher uiEventDispatcher;
+    private GameplayEventDispatcher gameplayEventDispatcher;
 
-    public void InitDependencies(UIEventDispatcher uiEventDispatcher, GameObject target)
+    public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher)
     {
-        this.uiEventDispatcher = uiEventDispatcher;
-        uiEventDispatcher.onPlayerKilled += Cleanup;
+        this.gameplayEventDispatcher = gameplayEventDispatcher;
+        gameplayEventDispatcher.onPlayerKilled += Cleanup;
         this.target = target;
     }
 
     private void OnDestroy()
     {
-        uiEventDispatcher.onPlayerKilled -= Cleanup;
+        gameplayEventDispatcher.onPlayerKilled -= Cleanup;
     }
 
     private void Cleanup()
@@ -39,7 +39,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (health <= 0)
         {
-            uiEventDispatcher.EnemyKilled();
+            gameplayEventDispatcher.EnemyKilled();
             Destroy(gameObject);
         }
 

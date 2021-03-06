@@ -16,17 +16,17 @@ namespace Context
 
         private void Start()
         {
-            UIEventDispatcher uiEventDispatcher = new UIEventDispatcher();
+            GameplayEventDispatcher gameplayEventDispatcher = new GameplayEventDispatcher();
             
             uiCanvas = (GameObject) PrefabUtility.InstantiatePrefab(Resources.Load("UICanvas"));
-            uiCanvas.GetComponent<UIController>().InitDependencies(uiEventDispatcher);
+            uiCanvas.GetComponent<UIController>().InitDependencies(gameplayEventDispatcher);
             
             player = (GameObject) PrefabUtility.InstantiatePrefab(Resources.Load("Player"));
             player.transform.position = playerSpawnOrigin.position;
-            player.GetComponent<PlayerController>().InitDependencies(uiEventDispatcher);
+            player.GetComponent<PlayerController>().InitDependencies(gameplayEventDispatcher);
             
             gameManager = new GameObject("GameManager").AddComponent<GameManager>();
-            gameManager.InitDependencies(uiEventDispatcher, player.gameObject);
+            gameManager.InitDependencies(gameplayEventDispatcher);
 
         }
     }
