@@ -1,20 +1,26 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Player
+namespace Processors
 {
 	enum PlayerMovementState
 	{
 		Airbourne,
 
-		Stationary,
+		Grounded,
 
-		Walking
+		Dashing
 	}
 
-	public class MovementController
+	public class MovementProcessor
 	{
 		private readonly float playerSpeed = 4f;
+
+		private readonly float jumpHeight = 2f;
+
+		private readonly float dashDistance = 1f;
+
+		private readonly Vector3 drag = new Vector3(5, 5, 5);
 
 		private readonly float minY = -60f;
 
@@ -32,19 +38,21 @@ namespace Player
 
 		private float lookY;
 
+		private bool isDashActionQueued = false;
+
 		private PlayerMovementState currentState;
 
-		public MovementController(Transform playerTransform, CharacterController characterController)
+		public MovementProcessor(Transform playerTransform, CharacterController characterController)
 		{
 			this.playerTransform = playerTransform;
 			this.characterController = characterController;
-			this.currentState = PlayerMovementState.Stationary;
+			this.currentState = PlayerMovementState.Grounded;
 		}
 
 		public void Update(Vector3 groundValidatorPos, float groundValidatorRadius, LayerMask groundLayer)
 		{
 			CheckGroundCollider(groundValidatorPos, groundValidatorRadius, groundLayer);
-			
+
 			Move();
 			Rotate();
 
@@ -52,9 +60,10 @@ namespace Player
 			{
 				Gravity();
 			}
-			else
+
+			if (isDashActionQueued)
 			{
-				
+				Dash();
 			}
 		}
 
@@ -63,6 +72,10 @@ namespace Player
 			if (!Physics.CheckSphere(groundValidatorPos, groundValidatorRadius, groundLayer, QueryTriggerInteraction.Ignore))
 			{
 				currentState = PlayerMovementState.Airbourne;
+			}
+			else
+			{
+				currentState = PlayerMovementState.Grounded;
 			}
 		}
 
@@ -101,13 +114,35 @@ namespace Player
 			playerTransform.localEulerAngles = new Vector3(lookY, lookX, 0);
 		}
 
-		public void SetJumpFromInput()
+		// Needs some work also
+		public void AttemptJump()
 		{
-			if (currentState != PlayerMovementState.Airbourne)
+			if (currentState == PlayerMovementState.Grounded)
 			{
 				Vector3 velocity = characterController.velocity;
-				velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y)
+
+				velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
+
+				characterController.Move(velocity);
 			}
+		}
+
+		public void TriggerDash()
+		{
+			isDashActionQueued = true;
+		}
+
+		// Needs some work
+		private void Dash()
+		{
+			Vector3 velocity = characterController.velocity;
+
+			velocity += Vector3.Scale(playerTransform.forward,
+				dashDistance * new Vector3((Mathf.Log(1f / (Time.deltaTime * drag.x + 1)) / -Time.deltaTime),
+					0,
+					(Mathf.Log(1f / (Time.deltaTime * drag.z + 1)) / -Time.deltaTime)));
+
+			characterController.Move(velocity);
 		}
 	}
 }

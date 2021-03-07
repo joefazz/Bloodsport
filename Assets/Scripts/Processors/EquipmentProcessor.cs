@@ -1,4 +1,4 @@
-﻿namespace Player
+﻿namespace Processors
 {
 	public class EquipmentController
 	{

@@ -1,5 +1,5 @@
 ﻿using System;
-using Player;
+using Processors;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -33,7 +33,7 @@ namespace Controllers
 
 		private GameplayEventDispatcher gameplayEventDispatcher;
 
-		private MovementController movementController;
+		private MovementProcessor movementProcessor;
 
 		public float Health => health;
 
@@ -45,14 +45,14 @@ namespace Controllers
 		private void Start()
 		{
 			this.layerMask = 1 << 8;
-			movementController = new MovementController(transform, characterController);
+			movementProcessor = new MovementProcessor(transform, characterController);
 		}
 
 		private void Update()
 		{
 			if (health > 0)
 			{
-				movementController.Update(groundValidator.position, groundValidatorRadius, groundLayer);
+				movementProcessor.Update(groundValidator.position, groundValidatorRadius, groundLayer);
 			}
 			else
 			{
@@ -84,25 +84,27 @@ namespace Controllers
 		// Triggered from InputSystem
 		public void OnMove(InputAction.CallbackContext ctx)
 		{
-			movementController.SetMoveDirectionFromInput(ctx.ReadValue<Vector2>());
+			movementProcessor.SetMoveDirectionFromInput(ctx.ReadValue<Vector2>());
 		}
 
 		public void OnJump(InputAction.CallbackContext ctx)
 		{
 			if (!ctx.performed) return;
 
-			movementController.Jump();
+			movementProcessor.AttemptJump();
 		}
 
 		public void OnDash(InputAction.CallbackContext ctx)
 		{
-			Debug.Log("Dash");
+			if (!ctx.performed) return;
+			
+			movementProcessor.TriggerDash();
 		}
 
 		// Triggered from InputSystem
 		public void OnLook(InputAction.CallbackContext ctx)
 		{
-			movementController.SetRotationXYFromInput(ctx.ReadValue<Vector2>());
+			movementProcessor.SetRotationXYFromInput(ctx.ReadValue<Vector2>());
 		}
 
 		private void OnCollisionEnter(Collision other)
