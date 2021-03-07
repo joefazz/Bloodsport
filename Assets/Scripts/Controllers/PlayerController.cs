@@ -87,6 +87,18 @@ namespace Controllers
 			movementController.SetMoveDirectionFromInput(ctx.ReadValue<Vector2>());
 		}
 
+		public void OnJump(InputAction.CallbackContext ctx)
+		{
+			if (!ctx.performed) return;
+
+			movementController.Jump();
+		}
+
+		public void OnDash(InputAction.CallbackContext ctx)
+		{
+			Debug.Log("Dash");
+		}
+
 		// Triggered from InputSystem
 		public void OnLook(InputAction.CallbackContext ctx)
 		{
