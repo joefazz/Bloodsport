@@ -29,8 +29,9 @@ namespace Controllers
 		[SerializeField]
 		private LayerMask groundLayer;
 
-		private int layerMask;
-
+		[SerializeField]
+		private LayerMask enemyLayer;
+		
 		private GameplayEventDispatcher gameplayEventDispatcher;
 
 		private MovementProcessor movementProcessor;
@@ -44,7 +45,6 @@ namespace Controllers
 
 		private void Start()
 		{
-			this.layerMask = 1 << 8;
 			movementProcessor = new MovementProcessor(transform, characterController);
 		}
 
@@ -74,7 +74,7 @@ namespace Controllers
 			if (!ctx.performed) return;
 
 			GetComponentInChildren<VisualEffect>().Play();
-			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit))
+			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, enemyLayer))
 			{
 				Debug.Log("Hit thing");
 				hit.collider.gameObject.GetComponent<EnemyAI>().Damage();
