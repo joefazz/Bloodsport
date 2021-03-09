@@ -50,13 +50,17 @@ namespace Controllers
 
 		private void Update()
 		{
+			if (health <= 0)
+			{
+				gameplayEventDispatcher.PlayerKilled();
+			}
+		}
+
+		private void FixedUpdate()
+		{
 			if (health > 0)
 			{
 				movementProcessor.Update(groundValidator.position, groundValidatorRadius, groundLayer);
-			}
-			else
-			{
-				gameplayEventDispatcher.PlayerKilled();
 			}
 		}
 
@@ -89,7 +93,7 @@ namespace Controllers
 
 		public void OnJump(InputAction.CallbackContext ctx)
 		{
-			if (ctx.started)
+			if (ctx.performed)
 			{
 				movementProcessor.AttemptJump();
 			}

@@ -16,7 +16,7 @@ namespace Processors
 	{
 		private readonly float playerSpeed = 4f;
 
-		private readonly float jumpHeight = 2f;
+		private readonly float jumpHeight = 1f;
 
 		private readonly float dashDistance = 1f;
 
@@ -70,7 +70,7 @@ namespace Processors
 				Dash();
 			}
 
-			if (shouldJump && currentState == PlayerMovementState.Grounded)
+			if (shouldJump)
 			{
 				Debug.Log("jump velocity added");
 				playerVelocity.y += Mathf.Sqrt(jumpHeight * -3f * Physics.gravity.y);
@@ -83,9 +83,8 @@ namespace Processors
 		private void CheckGroundCollider(Vector3 groundValidatorPos, float groundValidatorRadius, LayerMask groundLayer)
 		{
 			bool isSphereTouchingGround = Physics.CheckSphere(groundValidatorPos, groundValidatorRadius, groundLayer, QueryTriggerInteraction.Ignore);
-			Debug.Log("Grounded: " + isSphereTouchingGround);
-			// What seems to be happening is every other time we jump it jumps for different number of frames and i have no fuckin idea why
 
+			// What seems to be happening is every other time we jump it jumps for different number of frames and i have no fuckin idea why
 			if (!isSphereTouchingGround)
 			{
 				currentState = PlayerMovementState.Airbourne;
@@ -93,6 +92,7 @@ namespace Processors
 			else
 			{
 				currentState = PlayerMovementState.Grounded;
+				playerVelocity.y = 0;
 			}
 		}
 
@@ -130,6 +130,7 @@ namespace Processors
 		// Needs some work also
 		public void AttemptJump()
 		{
+			Debug.Log("doing anything?");
 			this.shouldJump = true;
 		}
 
