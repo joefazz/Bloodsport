@@ -89,9 +89,14 @@ namespace Controllers
 
 		public void OnJump(InputAction.CallbackContext ctx)
 		{
-			if (!ctx.performed) return;
-
-			movementProcessor.AttemptJump();
+			if (ctx.started)
+			{
+				movementProcessor.AttemptJump();
+			}
+			else if (ctx.canceled)
+			{
+				movementProcessor.StopJump();
+			}
 		}
 
 		public void OnDash(InputAction.CallbackContext ctx)

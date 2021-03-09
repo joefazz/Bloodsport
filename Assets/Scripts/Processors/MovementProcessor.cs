@@ -40,7 +40,11 @@ namespace Processors
 
 		private bool isDashActionQueued = false;
 
+		private Vector3 playerVelocity;
+
 		private PlayerMovementState currentState;
+
+		private bool shouldJump;
 
 		public MovementProcessor(Transform playerTransform, CharacterController characterController)
 		{
@@ -65,11 +69,24 @@ namespace Processors
 			{
 				Dash();
 			}
+
+			if (shouldJump && currentState == PlayerMovementState.Grounded)
+			{
+				Debug.Log("jump velocity added");
+				playerVelocity.y += Mathf.Sqrt(jumpHeight * -3f * Physics.gravity.y);
+				shouldJump = false;
+			}
+
+			characterController.Move(playerVelocity * Time.deltaTime);
 		}
 
 		private void CheckGroundCollider(Vector3 groundValidatorPos, float groundValidatorRadius, LayerMask groundLayer)
 		{
-			if (!Physics.CheckSphere(groundValidatorPos, groundValidatorRadius, groundLayer, QueryTriggerInteraction.Ignore))
+			bool isSphereTouchingGround = Physics.CheckSphere(groundValidatorPos, groundValidatorRadius, groundLayer, QueryTriggerInteraction.Ignore);
+			Debug.Log("Grounded: " + isSphereTouchingGround);
+			// What seems to be happening is every other time we jump it jumps for different number of frames and i have no fuckin idea why
+
+			if (!isSphereTouchingGround)
 			{
 				currentState = PlayerMovementState.Airbourne;
 			}
@@ -81,11 +98,7 @@ namespace Processors
 
 		private void Gravity()
 		{
-			Vector3 velocity = characterController.velocity;
-
-			velocity.y += Physics.gravity.y;
-
-			characterController.Move(velocity * Time.deltaTime);
+			playerVelocity.y += Physics.gravity.y * Time.deltaTime;
 		}
 
 		public void SetMoveDirectionFromInput(Vector2 direction)
@@ -117,14 +130,7 @@ namespace Processors
 		// Needs some work also
 		public void AttemptJump()
 		{
-			if (currentState == PlayerMovementState.Grounded)
-			{
-				Vector3 velocity = characterController.velocity;
-
-				velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
-
-				characterController.Move(velocity);
-			}
+			this.shouldJump = true;
 		}
 
 		public void TriggerDash()
@@ -143,6 +149,11 @@ namespace Processors
 					(Mathf.Log(1f / (Time.deltaTime * drag.z + 1)) / -Time.deltaTime)));
 
 			characterController.Move(velocity);
+		}
+
+		public void StopJump()
+		{
+			this.shouldJump = false;
 		}
 	}
 }
