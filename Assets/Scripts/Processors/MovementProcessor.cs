@@ -14,13 +14,15 @@ namespace Processors
 
 	public class MovementProcessor
 	{
-		private readonly float playerSpeed = 4f;
+		private readonly float playerSpeed = 8f;
 
 		private readonly float jumpHeight = 1f;
 
 		private readonly float dashDistance = 1f;
 
-		private readonly Vector3 drag = new Vector3(5, 5, 5);
+		private readonly Vector3 drag = new Vector3(2, 2, 2);
+
+		private float dashTime = 0f;
 
 		private readonly float minY = -60f;
 
@@ -69,22 +71,46 @@ namespace Processors
 			{
 				Dash();
 			}
-
-			if (shouldJump)
+			else
 			{
-				Debug.Log("jump velocity added");
+				playerVelocity.x = 0;
+				playerVelocity.z = 0;
+			}
+
+			if (shouldJump && currentState == PlayerMovementState.Grounded)
+			{
 				playerVelocity.y += Mathf.Sqrt(jumpHeight * -3f * Physics.gravity.y);
-				shouldJump = false;
 			}
 
 			characterController.Move(playerVelocity * Time.deltaTime);
+		}
+
+		// Dash distance actually has virtually no impact really the only thing that matters is what you plug into the move function
+		private void Dash()
+		{
+			if (dashTime <= dashDistance)
+			{
+				currentState = PlayerMovementState.Dashing;
+				
+				Vector3 movement = playerTransform.forward * 20f - (drag * dashTime);
+				
+				movement.y = 0;
+
+				characterController.Move(movement * Time.deltaTime);
+
+				dashTime += Time.deltaTime;
+			}
+			else
+			{
+				dashTime = 0;
+				isDashActionQueued = false;
+			}
 		}
 
 		private void CheckGroundCollider(Vector3 groundValidatorPos, float groundValidatorRadius, LayerMask groundLayer)
 		{
 			bool isSphereTouchingGround = Physics.CheckSphere(groundValidatorPos, groundValidatorRadius, groundLayer, QueryTriggerInteraction.Ignore);
 
-			// What seems to be happening is every other time we jump it jumps for different number of frames and i have no fuckin idea why
 			if (!isSphereTouchingGround)
 			{
 				currentState = PlayerMovementState.Airbourne;
@@ -108,6 +134,8 @@ namespace Processors
 
 		public void SetRotationXYFromInput(Vector2 lookXY)
 		{
+			if (currentState == PlayerMovementState.Dashing) return;
+
 			lookX += lookXY.x * sensitivity.x;
 			lookY -= lookXY.y * sensitivity.y;
 		}
@@ -117,6 +145,8 @@ namespace Processors
 			Vector3 movement =
 				(playerTransform.forward * moveDirection.y + playerTransform.right * moveDirection.x)
 				* playerSpeed;
+
+			movement.y = 0;
 
 			characterController.Move(movement * Time.deltaTime);
 		}
@@ -130,31 +160,17 @@ namespace Processors
 		// Needs some work also
 		public void AttemptJump()
 		{
-			Debug.Log("doing anything?");
 			this.shouldJump = true;
-		}
-
-		public void TriggerDash()
-		{
-			isDashActionQueued = true;
-		}
-
-		// Needs some work
-		private void Dash()
-		{
-			Vector3 velocity = characterController.velocity;
-
-			velocity += Vector3.Scale(playerTransform.forward,
-				dashDistance * new Vector3((Mathf.Log(1f / (Time.deltaTime * drag.x + 1)) / -Time.deltaTime),
-					0,
-					(Mathf.Log(1f / (Time.deltaTime * drag.z + 1)) / -Time.deltaTime)));
-
-			characterController.Move(velocity);
 		}
 
 		public void StopJump()
 		{
 			this.shouldJump = false;
+		}
+
+		public void TriggerDash()
+		{
+			isDashActionQueued = true;
 		}
 	}
 }

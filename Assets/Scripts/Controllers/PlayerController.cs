@@ -31,6 +31,9 @@ namespace Controllers
 
 		[SerializeField]
 		private LayerMask enemyLayer;
+
+		[SerializeField]
+		private Transform headTransform;
 		
 		private GameplayEventDispatcher gameplayEventDispatcher;
 
@@ -45,7 +48,7 @@ namespace Controllers
 
 		private void Start()
 		{
-			movementProcessor = new MovementProcessor(transform, characterController);
+			movementProcessor = new MovementProcessor(headTransform, characterController);
 		}
 
 		private void Update()
