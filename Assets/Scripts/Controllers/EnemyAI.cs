@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using Controllers;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class EnemyAI : MonoBehaviour
 {
-    private GameObject target;
     private Coroutine shootCoro;
     private bool isShooting;
+
+    private GameObject target;
+
+    [SerializeField]
+    private VisualEffect bloodSpurt;
 
     private const float FireRate = 0.5f;
 
@@ -16,7 +21,7 @@ public class EnemyAI : MonoBehaviour
 
     private GameplayEventDispatcher gameplayEventDispatcher;
 
-    public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher)
+    public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher, GameObject target)
     {
         this.gameplayEventDispatcher = gameplayEventDispatcher;
         gameplayEventDispatcher.onPlayerKilled += Cleanup;
@@ -73,13 +78,17 @@ public class EnemyAI : MonoBehaviour
         isShooting = false;
     }
 
-    public void Damage()
+    public void Damage(Vector3 hitPos)
     {
         health -= 5;
+        bloodSpurt.transform.position = hitPos;
+        bloodSpurt.transform.LookAt(target.transform);
+        bloodSpurt.Play();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("hit enemy");
+        
     }
 }

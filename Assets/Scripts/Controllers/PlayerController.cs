@@ -12,9 +12,6 @@ namespace Controllers
 	public class PlayerController : MonoBehaviour
 	{
 		[SerializeField]
-		private Camera camera;
-
-		[SerializeField]
 		private CharacterController characterController;
 
 		[SerializeField]
@@ -39,11 +36,14 @@ namespace Controllers
 
 		private MovementProcessor movementProcessor;
 
+		private Camera playerCamera;
+
 		public float Health => health;
 
-		public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher)
+		public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher, Camera playerCamera)
 		{
 			this.gameplayEventDispatcher = gameplayEventDispatcher;
+			this.playerCamera = playerCamera;
 		}
 
 		private void Start()
@@ -72,7 +72,7 @@ namespace Controllers
 			// Draw a yellow sphere at the transform's position
 			Gizmos.color = Color.yellow;
 			Gizmos.DrawSphere(groundValidator.position, groundValidatorRadius);
-
+			
 		}
 
 		// Triggered from InputSystem
@@ -81,10 +81,13 @@ namespace Controllers
 			if (!ctx.performed) return;
 
 			GetComponentInChildren<VisualEffect>().Play();
-			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, enemyLayer))
+
+			Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+
+			if (Physics.Raycast(ray, out RaycastHit hit, enemyLayer))
 			{
 				Debug.Log("Hit thing");
-				hit.collider.gameObject.GetComponent<EnemyAI>().Damage();
+				hit.collider.gameObject.GetComponent<EnemyAI>().Damage(hit.point);
 			}
 		}
 
@@ -126,7 +129,7 @@ namespace Controllers
 
 		public void Damage()
 		{
-			health -= 5;
+			// health -= 5;
 		}
 	}
 }

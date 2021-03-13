@@ -91,9 +91,9 @@ namespace Processors
 			if (dashTime <= dashDistance)
 			{
 				currentState = PlayerMovementState.Dashing;
-				
+
 				Vector3 movement = playerTransform.forward * 20f - (drag * dashTime);
-				
+
 				movement.y = 0;
 
 				characterController.Move(movement * Time.deltaTime);
@@ -142,8 +142,23 @@ namespace Processors
 
 		private void Move()
 		{
+			Vector3 forward = playerTransform.forward;
+			Vector3 right = playerTransform.right;
+
+			if (currentState == PlayerMovementState.Grounded)
+			{
+				Ray ray = new Ray(playerTransform.position, Vector3.down);
+
+				if (Physics.Raycast(ray, out RaycastHit hitInfo))
+				{
+					forward *= hitInfo.normal.y;
+				}
+
+				Debug.DrawRay(ray.origin, ray.direction);
+			}
+
 			Vector3 movement =
-				(playerTransform.forward * moveDirection.y + playerTransform.right * moveDirection.x)
+				(forward * moveDirection.y + right * moveDirection.x)
 				* playerSpeed;
 
 			movement.y = 0;

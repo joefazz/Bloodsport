@@ -13,9 +13,12 @@ public class EnemySpawner : MonoBehaviour
 
 	private GameplayEventDispatcher gameplayEventDispatcher;
 
-	public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher)
+	private GameObject player;
+
+	public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher, GameObject player)
 	{
 		this.gameplayEventDispatcher = gameplayEventDispatcher;
+		this.player = player;
 		gameplayEventDispatcher.onGameOver += Cleanup;
 	}
 
@@ -35,7 +38,7 @@ public class EnemySpawner : MonoBehaviour
 		{
 			yield return new WaitForSeconds(spawnRate);
 			GameObject spawnedEnemy = (GameObject) PrefabUtility.InstantiatePrefab(Resources.Load("Enemy"));
-			spawnedEnemy.GetComponent<EnemyAI>().InitDependencies(gameplayEventDispatcher);
+			spawnedEnemy.GetComponent<EnemyAI>().InitDependencies(gameplayEventDispatcher, player);
 		}
 	}
 }

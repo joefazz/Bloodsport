@@ -11,7 +11,7 @@ public class Pixelation : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		int realRatio = Mathf.RoundToInt(Screen.width / Screen.height);
+		int realRatio = Mathf.Max(Mathf.RoundToInt(Screen.width / Screen.height), 1);
 		renderTexture.width = NearestSuperiorPowerOf2(Mathf.RoundToInt(renderTexture.width * realRatio));
 	}
 
