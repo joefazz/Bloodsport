@@ -38,12 +38,15 @@ namespace Controllers
 
 		private Camera playerCamera;
 
+		private bool isCombatScene;
+
 		public float Health => health;
 
-		public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher, Camera playerCamera)
+		public void InitDependencies(GameplayEventDispatcher gameplayEventDispatcher, Camera playerCamera, bool isCombatScene)
 		{
 			this.gameplayEventDispatcher = gameplayEventDispatcher;
 			this.playerCamera = playerCamera;
+			this.isCombatScene = isCombatScene;
 		}
 
 		private void Start()
@@ -78,7 +81,7 @@ namespace Controllers
 		// Triggered from InputSystem
 		public void OnFire(InputAction.CallbackContext ctx)
 		{
-			if (!ctx.performed) return;
+			if (!ctx.performed || !isCombatScene) return;
 
 			GetComponentInChildren<VisualEffect>().Play();
 

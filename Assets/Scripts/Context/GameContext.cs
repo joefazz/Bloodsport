@@ -32,7 +32,7 @@ namespace Context
             
             player = (GameObject) PrefabUtility.InstantiatePrefab(Resources.Load("Player"));
             player.transform.position = playerSpawnOrigin.position;
-            player.GetComponent<PlayerController>().InitDependencies(gameplayEventDispatcher, cameraBrain.OutputCamera);
+            player.GetComponent<PlayerController>().InitDependencies(gameplayEventDispatcher, cameraBrain.OutputCamera, true);
             
             gameManager.InitDependencies(gameplayEventDispatcher);
 
