@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace Processors
+namespace Bloodsport.Processors
 {
 	enum PlayerMovementState
 	{
