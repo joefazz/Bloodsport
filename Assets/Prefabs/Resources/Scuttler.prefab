@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 953333587557908402}
   - component: {fileID: 1975347818744163919}
   m_Layer: 6
-  m_Name: Enemy
+  m_Name: Scuttler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 953333587557908415}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2438891237200805622}
@@ -122,13 +122,13 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 6
-  m_Acceleration: 8
+  m_Speed: 20
+  m_Acceleration: 12
   avoidancePriority: 50
-  m_AngularSpeed: 240
-  m_StoppingDistance: 4
+  m_AngularSpeed: 500
+  m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 0.5

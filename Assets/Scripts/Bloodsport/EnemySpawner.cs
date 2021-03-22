@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections;
-using Controllers;
-using UnityEditor;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -9,6 +7,9 @@ public class EnemySpawner : MonoBehaviour
 	[SerializeField]
 	private float spawnRate = 5f;
 
+	[SerializeField]
+	private GameObject prefabToSpawn;
+	
 	private Coroutine enemySpawnTimerCoro;
 
 	private GameplayEventDispatcher gameplayEventDispatcher;
@@ -37,7 +38,7 @@ public class EnemySpawner : MonoBehaviour
 		while (true)
 		{
 			yield return new WaitForSeconds(spawnRate);
-			GameObject spawnedEnemy = (GameObject) PrefabUtility.InstantiatePrefab(Resources.Load("Enemy"));
+			GameObject spawnedEnemy = Instantiate(prefabToSpawn, transform);
 			spawnedEnemy.GetComponent<EnemyAI>().InitDependencies(gameplayEventDispatcher, player);
 		}
 	}
